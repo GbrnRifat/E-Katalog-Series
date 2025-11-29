@@ -1,35 +1,32 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// BASE URL dari .env
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+console.log("[API] Base URL:", BASE_URL);
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-  timeout: 30000,
+  timeout: 10000,
 });
 
-// Request interceptor
-apiClient.interceptors.request.use(
-  (config) => {
-    console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`);
-    return config;
-  },
-  (error) => {
-    console.error('[API] Request error:', error);
-    return Promise.reject(error);
-  }
-);
+// Logging Request
+apiClient.interceptors.request.use((config) => {
+  console.log("[API Request]", config.method.toUpperCase(), config.url);
+  return config;
+});
 
-// Response interceptor
+// Logging Response
 apiClient.interceptors.response.use(
   (response) => {
-    console.log(`[API] Response:`, response.data);
-    return response.data;
+    console.log("[API Response]", response.data);
+    return response;
   },
   (error) => {
-    console.error('[API] Response error:', error.response?.data || error.message);
+    console.error("[API Error]", error);
     return Promise.reject(error);
   }
 );
